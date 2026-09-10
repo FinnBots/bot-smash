@@ -473,15 +473,21 @@ if(!HEADLESS){
     ctx.fillRect(px,py,pw,ph);
     ctx.fillStyle='#3a6ff7'; ctx.fillRect(px,py,pw,2);
 
-    // bead = Bot 106 (like Bot Pong); amber-bead fallback if art can't load
-    const R=DIFFICULTY.ballR;
+    // bead = Bot 106 as a ROUND token (like Bot Pong); round amber fallback
+    const R=DIFFICULTY.ballR, cx=s.ball.x, cy=s.ball.y;
+    ctx.save();
+    ctx.beginPath(); ctx.arc(cx,cy,R,0,Math.PI*2); ctx.closePath();
     if(heroOK){
-      const d=R*2+4;
-      ctx.drawImage(hero, Math.round(s.ball.x-d/2), Math.round(s.ball.y-d/2), d, d);
+      ctx.fillStyle='#2a2230'; ctx.fill();      // backing so PNG corners never show board
+      ctx.clip();
+      const d=R*2+4;                             // slight overscan so 106's face fills the disc
+      ctx.drawImage(hero, cx-d/2, cy-d/2, d, d);
     }else{
-      ctx.fillStyle=CFG.accent;
-      ctx.fillRect(Math.round(s.ball.x-R),Math.round(s.ball.y-R),R*2,R*2);
+      ctx.fillStyle=CFG.accent; ctx.fill();      // round amber bead
     }
+    ctx.restore();
+    ctx.beginPath(); ctx.arc(cx,cy,R,0,Math.PI*2);
+    ctx.lineWidth=1.5; ctx.strokeStyle='rgba(160,232,240,.9)'; ctx.stroke();  // cyan ring, Pong-style
 
     // serve hint
     if(s.phase==='serve'){
