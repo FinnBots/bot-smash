@@ -103,6 +103,12 @@
   .overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;
            background:rgba(42,34,48,.55);backdrop-filter:blur(2px);padding:var(--s4);z-index:20}
   .overlay.show{display:flex}
+  /* The Paid start/run-over card (#paidOverlay) is a full-viewport modal (z-index 20).
+     Its own card tells the player to "Connect wallet first", so the mode pills and the
+     wallet bar must stay clickable ABOVE that backdrop in Paid mode — otherwise the
+     backdrop swallows the wallet-bar Connect tap and provider.connect() never fires. */
+  body.mode-paid .modebar,
+  body.mode-paid .walletbar{position:relative;z-index:21}
   .card{background:var(--soft);border-radius:var(--r-xl);box-shadow:var(--sh2);
         max-width:360px;width:100%;padding:var(--s6);text-align:center}
   .card h2{font-family:var(--disp);font-size:30px;margin:0 0 var(--s2);color:var(--plum-deep)}
