@@ -550,7 +550,14 @@ if(!HEADLESS){
   // ---- render ------------------------------------------------------------
   function draw(){
     ctx.clearRect(0,0,VIEW.w,VIEW.h);
-    ctx.fillStyle='#2a2230'; ctx.fillRect(0,0,VIEW.w,VIEW.h);
+    // background — plum gradient + faint tech grid (depth behind the wall)
+    const bg=ctx.createLinearGradient(0,0,0,VIEW.h);
+    bg.addColorStop(0,'#352838'); bg.addColorStop(0.6,'#241d2c'); bg.addColorStop(1,'#191420');
+    ctx.fillStyle=bg; ctx.fillRect(0,0,VIEW.w,VIEW.h);
+    ctx.strokeStyle='rgba(127,215,255,.05)'; ctx.lineWidth=1; ctx.beginPath();
+    for(let gx=0;gx<=VIEW.w;gx+=24){ ctx.moveTo(gx+.5,0); ctx.lineTo(gx+.5,VIEW.h); }
+    for(let gy=0;gy<=VIEW.h;gy+=24){ ctx.moveTo(0,gy+.5); ctx.lineTo(VIEW.w,gy+.5); }
+    ctx.stroke();
 
     // bricks — shaded FinnBot tech panels (outline + highlight + shadow + rivets)
     for(const k of s.bricks){
