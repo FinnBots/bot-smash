@@ -552,19 +552,24 @@ if(!HEADLESS){
     ctx.clearRect(0,0,VIEW.w,VIEW.h);
     ctx.fillStyle='#2a2230'; ctx.fillRect(0,0,VIEW.w,VIEW.h);
 
-    // bricks
+    // bricks — shaded FinnBot tech panels (outline + highlight + shadow + rivets)
     for(const k of s.bricks){
       if(!k.alive) continue;
-      ctx.fillStyle=k.tint; ctx.fillRect(k.x,k.y,k.w,k.h);
-      ctx.fillStyle='rgba(255,255,255,.22)'; ctx.fillRect(k.x,k.y,k.w,2);
-      ctx.strokeStyle='rgba(0,0,0,.18)'; ctx.lineWidth=1; ctx.strokeRect(k.x+.5,k.y+.5,k.w-1,k.h-1);
+      ctx.fillStyle='#120a22'; ctx.fillRect(k.x,k.y,k.w,k.h);                         // outline
+      ctx.fillStyle=k.tint;    ctx.fillRect(k.x+1,k.y+1,k.w-2,k.h-2);                 // base
+      ctx.fillStyle='rgba(255,255,255,.30)'; ctx.fillRect(k.x+1,k.y+1,k.w-2,2);       // top highlight
+      ctx.fillStyle='rgba(0,0,0,.30)';       ctx.fillRect(k.x+1,k.y+k.h-3,k.w-2,2);   // bottom shadow
+      ctx.fillStyle='rgba(0,0,0,.32)'; ctx.fillRect(k.x+3,k.y+(k.h>>1)-1,2,2); ctx.fillRect(k.x+k.w-5,k.y+(k.h>>1)-1,2,2); // rivets
     }
 
-    // paddle — clean FDL bar (Bot 106 rides the bead, not the paddle)
+    // paddle — plum hover-bar with an electric top edge + dark outline
     const px=s.paddleX, py=DIFFICULTY.paddleY, pw=DIFFICULTY.paddleW, ph=DIFFICULTY.paddleH;
+    ctx.fillStyle='#120a22'; ctx.fillRect(px-1,py-1,pw+2,ph+2);
     ctx.fillStyle=getComputedStyle(document.documentElement).getPropertyValue('--plum')||'#5f4c57';
     ctx.fillRect(px,py,pw,ph);
     ctx.fillStyle='#3a6ff7'; ctx.fillRect(px,py,pw,2);
+    ctx.fillStyle='rgba(0,0,0,.28)'; ctx.fillRect(px,py+ph-2,pw,2);
+    ctx.fillStyle='#7fd7ff'; ctx.fillRect(px+4,py+3,3,3); ctx.fillRect(px+pw-7,py+3,3,3);  // end lights
 
     // bead = Bot 106 as a ROUND token (like Bot Pong); round amber fallback
     const R=DIFFICULTY.ballR, cx=s.ball.x, cy=s.ball.y;
