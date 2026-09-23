@@ -189,7 +189,7 @@
       <div class="tag">a FinnBots game</div>
       <div class="links">
         <a href="https://magiceden.io/marketplace/finnbot" target="_blank" rel="noopener">Buy a Bot</a>·
-        <a href="https://games.finnstergram.com/" target="_blank" rel="noopener">More games</a>·
+        <a href="https://finnstergram.com/games" target="_blank" rel="noopener">More games</a>·
         <a href="https://smash.finnstergram.com/leaderboard.html" target="_blank" rel="noopener">Leaderboard</a>
       </div>
     </footer>
@@ -201,10 +201,10 @@
       <h2 id="rulesTitle">HOW TO PLAY</h2>
       <ul class="rules">
         <li><b>Drag</b> left/right (or use ← →) to slide the paddle.</li>
-        <li>Bot 106 serves himself as the bead. Break the wall — top rows score most.</li>
+        <li>Bot 106 serves himself as the bead. Break the wall — arcade values: <b>7 / 5 / 3 / 1</b> points from the top band down.</li>
         <li>Clear the whole wall and a <b>faster wall</b> returns. That's your next wave.</li>
         <li>Miss the bead and you lose one of <b>3 lives</b>.</li>
-        <li>The bead speeds up every wave and never stops — see how many waves you can clear before it outruns the paddle.</li>
+        <li>The bead speeds up on the <b>4th and 12th</b> hit of a turn and again on first contact with the orange and red bands. Break through to the <b>top wall and your paddle halves</b>. It speeds up every wave too — see how many you clear.</li>
       </ul>
       <p class="safe">Free play never touches a wallet, never asks for a seed phrase, and never moves a Bot.</p>
       <button class="btn" id="rulesClose">Got it</button>
@@ -269,15 +269,19 @@ const CFG = {
 const VIEW = { w:480, h:320 };
 
 /* ---- WALL: rows are data. Tint band + points per row, top -> bottom. ------ */
+/* Arcade Breakout (Atari, 1976): 8 rows of 14 bricks, two rows per colour band,
+   worth 7 / 5 / 3 / 1 points from the top down. FinnBots tints, arcade numbers. */
 const WALL = {
-  cols:11, rows:6, padX:8, padTop:34, gap:2, brickH:14,
+  cols:14, rows:8, padX:8, padTop:30, gap:2, brickH:12,
   rowdef:[ // one entry per row, top first
-    { points:100, tint:'#3a6ff7', label:'TICK' },  // Ticker band
-    { points:80,  tint:'#3a6ff7', label:'TICK' },
-    { points:60,  tint:'#a0e8f0', label:'SIP'  },  // Sip band
-    { points:40,  tint:'#a0e8f0', label:'SIP'  },
-    { points:20,  tint:'#a0f0c0', label:'CAM'  },  // Cam band
-    { points:10,  tint:'#a0f0c0', label:'CAM'  },
+    { points:7, tint:'#e0553f', label:'DRUM' },   // Drum band  (red    = 7)
+    { points:7, tint:'#e0553f', label:'DRUM' },
+    { points:5, tint:'#f2a03d', label:'TICK' },   // Ticker band(orange = 5)
+    { points:5, tint:'#f2a03d', label:'TICK' },
+    { points:3, tint:'#a0f0c0', label:'CAM'  },   // Cam band   (green  = 3)
+    { points:3, tint:'#a0f0c0', label:'CAM'  },
+    { points:1, tint:'#f2d94e', label:'SIP'  },   // Sip band   (yellow = 1)
+    { points:1, tint:'#f2d94e', label:'SIP'  },
   ],
 };
 
@@ -296,8 +300,11 @@ const DIFFICULTY = {
   ballR:7,                     // bead carries Bot 106 art — sized to read
   baseSpeed:190,               // px/s at wave 1
   waveMult:1.16,               // per-wave speed growth — UNBOUNDED (the ceiling)
-  hitBumpEvery:4, hitBump:1.03,// intra-wave speed-up on sustained rallies
-  bandBump:1.04,               // speed-up when the bead first reaches a higher band
+  // arcade Breakout speeds the ball up on the 4th and 12th hit of a turn, and again
+  // on first contact with the orange and the red rows.
+  hitBumpAt:[4,12], hitBump:1.06,
+  bandBump:1.06,               // first contact with the orange (row 2/3) and red (row 0/1) bands
+  halveOnTopWall:true,         // arcade: the paddle halves once the bead hits the top wall
   minBounceAngle:0.30,         // rad — floor so a centred hit never goes vertical (no column-lock)
   maxBounceAngle:1.05,         // rad (~60deg) paddle english off centre-hit
   serveMs:850,                 // auto-serve pause (wave start / after a life lost)
@@ -334,6 +341,7 @@ function newRun(){
     score:0, lives:DIFFICULTY.lives,
     timeMs:0, serveTimer:DIFFICULTY.serveMs,
     hitsThisServe:0, topBandReached:99,
+    paddleW:DIFFICULTY.paddleW, hitTopWall:false,
     paddleX:(VIEW.w-DIFFICULTY.paddleW)/2,
     targetX:(VIEW.w-DIFFICULTY.paddleW)/2,
     ball:{ x:VIEW.w/2, y:DIFFICULTY.paddleY-DIFFICULTY.ballR-1, vx:0, vy:0 },
@@ -341,7 +349,7 @@ function newRun(){
   };
 }
 
-function paddleCenter(s){ return s.paddleX + DIFFICULTY.paddleW/2; }
+function paddleCenter(s){ return s.paddleX + s.paddleW/2; }
 
 /* Paddle english: map hit-offset to an exit angle, clamped so the bead is
    never near-vertical (column-lock) nor near-horizontal (side-ping). */
@@ -367,6 +375,7 @@ function nextWave(s){
   s.wavesCleared++; s.wave++;
   s.bricks = makeWall();
   s.topBandReached = 99;
+  s.paddleW = DIFFICULTY.paddleW; s.hitTopWall = false;   // fresh wall, full-width paddle
   s.phase = 'serve'; s.serveTimer = DIFFICULTY.serveMs;
   s.ball.vx = 0; s.ball.vy = 0;
 }
@@ -385,13 +394,13 @@ function bumpSpeed(s, factor){
 /* Advance one fixed step. targetX = desired paddle left-edge (input).
    Returns an events object for sound/flash. Deterministic given inputs. */
 function stepPhysics(s, dtMs, targetX){
-  const ev = { brick:false, wall:false, paddle:false, life:false, cleared:false };
+  const ev = { brick:false, wall:false, paddle:false, life:false, cleared:false, halve:false };
   const dt = dtMs/1000;
   if(s.phase==='dead') return ev;
   s.timeMs += dtMs;
 
   // paddle: move toward target, clamped to FINITE max speed (device-agnostic)
-  s.targetX = Math.max(0, Math.min(VIEW.w-DIFFICULTY.paddleW, targetX));
+  s.targetX = Math.max(0, Math.min(VIEW.w-s.paddleW, targetX));
   const maxStep = DIFFICULTY.paddleMaxSpeed*dt;
   const dx = s.targetX - s.paddleX;
   s.paddleX += Math.abs(dx)<=maxStep ? dx : Math.sign(dx)*maxStep;
@@ -411,20 +420,25 @@ function stepPhysics(s, dtMs, targetX){
   // side + top walls
   if(b.x<R){ b.x=R; b.vx=Math.abs(b.vx); ev.wall=true; }
   else if(b.x>VIEW.w-R){ b.x=VIEW.w-R; b.vx=-Math.abs(b.vx); ev.wall=true; }
-  if(b.y<R){ b.y=R; b.vy=Math.abs(b.vy); ev.wall=true; }
+  if(b.y<R){ b.y=R; b.vy=Math.abs(b.vy); ev.wall=true;
+    // arcade: the first touch of the TOP wall halves the paddle for the rest of the wall
+    if(DIFFICULTY.halveOnTopWall && !s.hitTopWall){
+      s.hitTopWall=true; const c=paddleCenter(s); s.paddleW=DIFFICULTY.paddleW/2;
+      s.paddleX=Math.max(0,Math.min(VIEW.w-s.paddleW, c-s.paddleW/2)); ev.halve=true;
+    } }
 
   // paddle
   const pyTop=DIFFICULTY.paddleY;
   if(b.vy>0 && b.y+R>=pyTop && b.y-R<=pyTop+DIFFICULTY.paddleH &&
-     b.x>=s.paddleX-R && b.x<=s.paddleX+DIFFICULTY.paddleW+R){
+     b.x>=s.paddleX-R && b.x<=s.paddleX+s.paddleW+R){
     const spd=Math.hypot(b.vx,b.vy);
-    let off=(b.x-paddleCenter(s))/(DIFFICULTY.paddleW/2);
+    let off=(b.x-paddleCenter(s))/(s.paddleW/2);
     off=Math.max(-1,Math.min(1,off));
     const ang=paddleExitAngle(off);
     b.vx=spd*Math.sin(ang); b.vy=-Math.abs(spd*Math.cos(ang));
     b.y=pyTop-R-0.5;
     s.hitsThisServe++;
-    if(s.hitsThisServe%DIFFICULTY.hitBumpEvery===0) bumpSpeed(s,DIFFICULTY.hitBump);
+    if(DIFFICULTY.hitBumpAt.indexOf(s.hitsThisServe)>=0) bumpSpeed(s,DIFFICULTY.hitBump);
     ev.paddle=true;
   }
 
@@ -441,7 +455,11 @@ function stepPhysics(s, dtMs, targetX){
     const minX=Math.min(overL,overR), minY=Math.min(overT,overB);
     if(minX<minY) b.vx=-b.vx; else b.vy=-b.vy;
     // reaching a higher band speeds the bead up once
-    if(k.band<s.topBandReached){ s.topBandReached=k.band; bumpSpeed(s,DIFFICULTY.bandBump); }
+    if(k.band<s.topBandReached){
+      const wasAbove=s.topBandReached, now=k.band; s.topBandReached=now;
+      // crossing into the ORANGE pair (rows 2-3) or the RED pair (rows 0-1) speeds the bead up
+      if((now<=3 && wasAbove>3) || (now<=1 && wasAbove>1)) bumpSpeed(s,DIFFICULTY.bandBump);
+    }
     if(s.bricks.every(z=>!z.alive)){ ev.cleared=true; nextWave(s); return ev; }
   }
 
@@ -469,7 +487,7 @@ if(!HEADLESS){
   hero.crossOrigin='anonymous';
   hero.onload=()=>{heroOK=true;};
   hero.onerror=()=>{heroOK=false;};
-  hero.src='assets/hero/bot-106.png';   // keyed transparent 106 (no cyan box)
+  if(CFG.spriteBase && CFG.spriteBase.indexOf('REPLACE_')!==0){ hero.src=CFG.spriteBase+'/'+CFG.hero+'.png'; }
 
   let s=newRun(); let flash=0;
   // active gates the sim: Free auto-plays (true on load); Paid idles until entry.
@@ -479,7 +497,7 @@ if(!HEADLESS){
   function pointerX(clientX){
     const r=cv.getBoundingClientRect();
     const x=(clientX-r.left)/r.width*VIEW.w;
-    return x-DIFFICULTY.paddleW/2;
+    return x-s.paddleW/2;
   }
   let dragging=false;
   function down(e){ dragging=true; move(e); }
@@ -550,33 +568,21 @@ if(!HEADLESS){
   // ---- render ------------------------------------------------------------
   function draw(){
     ctx.clearRect(0,0,VIEW.w,VIEW.h);
-    // background — plum gradient + faint tech grid (depth behind the wall)
-    const bg=ctx.createLinearGradient(0,0,0,VIEW.h);
-    bg.addColorStop(0,'#352838'); bg.addColorStop(0.6,'#241d2c'); bg.addColorStop(1,'#191420');
-    ctx.fillStyle=bg; ctx.fillRect(0,0,VIEW.w,VIEW.h);
-    ctx.strokeStyle='rgba(127,215,255,.05)'; ctx.lineWidth=1; ctx.beginPath();
-    for(let gx=0;gx<=VIEW.w;gx+=24){ ctx.moveTo(gx+.5,0); ctx.lineTo(gx+.5,VIEW.h); }
-    for(let gy=0;gy<=VIEW.h;gy+=24){ ctx.moveTo(0,gy+.5); ctx.lineTo(VIEW.w,gy+.5); }
-    ctx.stroke();
+    ctx.fillStyle='#2a2230'; ctx.fillRect(0,0,VIEW.w,VIEW.h);
 
-    // bricks — shaded FinnBot tech panels (outline + highlight + shadow + rivets)
+    // bricks
     for(const k of s.bricks){
       if(!k.alive) continue;
-      ctx.fillStyle='#120a22'; ctx.fillRect(k.x,k.y,k.w,k.h);                         // outline
-      ctx.fillStyle=k.tint;    ctx.fillRect(k.x+1,k.y+1,k.w-2,k.h-2);                 // base
-      ctx.fillStyle='rgba(255,255,255,.30)'; ctx.fillRect(k.x+1,k.y+1,k.w-2,2);       // top highlight
-      ctx.fillStyle='rgba(0,0,0,.30)';       ctx.fillRect(k.x+1,k.y+k.h-3,k.w-2,2);   // bottom shadow
-      ctx.fillStyle='rgba(0,0,0,.32)'; ctx.fillRect(k.x+3,k.y+(k.h>>1)-1,2,2); ctx.fillRect(k.x+k.w-5,k.y+(k.h>>1)-1,2,2); // rivets
+      ctx.fillStyle=k.tint; ctx.fillRect(k.x,k.y,k.w,k.h);
+      ctx.fillStyle='rgba(255,255,255,.22)'; ctx.fillRect(k.x,k.y,k.w,2);
+      ctx.strokeStyle='rgba(0,0,0,.18)'; ctx.lineWidth=1; ctx.strokeRect(k.x+.5,k.y+.5,k.w-1,k.h-1);
     }
 
-    // paddle — plum hover-bar with an electric top edge + dark outline
-    const px=s.paddleX, py=DIFFICULTY.paddleY, pw=DIFFICULTY.paddleW, ph=DIFFICULTY.paddleH;
-    ctx.fillStyle='#120a22'; ctx.fillRect(px-1,py-1,pw+2,ph+2);
+    // paddle — clean FDL bar (Bot 106 rides the bead, not the paddle)
+    const px=s.paddleX, py=DIFFICULTY.paddleY, pw=s.paddleW, ph=DIFFICULTY.paddleH;
     ctx.fillStyle=getComputedStyle(document.documentElement).getPropertyValue('--plum')||'#5f4c57';
     ctx.fillRect(px,py,pw,ph);
     ctx.fillStyle='#3a6ff7'; ctx.fillRect(px,py,pw,2);
-    ctx.fillStyle='rgba(0,0,0,.28)'; ctx.fillRect(px,py+ph-2,pw,2);
-    ctx.fillStyle='#7fd7ff'; ctx.fillRect(px+4,py+3,3,3); ctx.fillRect(px+pw-7,py+3,3,3);  // end lights
 
     // bead = Bot 106 as a ROUND token (like Bot Pong); round amber fallback
     const R=DIFFICULTY.ballR, cx=s.ball.x, cy=s.ball.y;
@@ -643,8 +649,6 @@ if(!HEADLESS){
   requestAnimationFrame(frame);
 })();
 }
-/* Auto-open the How-To as an intro on first load (skip Phantom redirect returns). */
-try{var _bpIntro=new URLSearchParams(location.search);if(!_bpIntro.get('phantom_action')&&_bpIntro.get('src')!=='browse'){addEventListener('load',function(){var b=document.getElementById('infoBtn');if(b)b.click();});}}catch(e){}
 </script>
 
 <!-- Shared wallet libs (loaded once; the wallet LOGIC stays dead until Paid is chosen — mirrors live Mr Bot / Rush). -->
