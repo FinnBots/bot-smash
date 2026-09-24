@@ -472,7 +472,10 @@ function stepPhysics(s, dtMs, targetX){
 const HEADLESS = (typeof document === 'undefined');
 if(HEADLESS){
   module.exports = { CFG, VIEW, WALL, DIFFICULTY, ballSpeed, makeWall, newRun,
-                     launchBall, stepPhysics, nextWave, paddleCenter };
+                     launchBall, stepPhysics, nextWave, paddleCenter,
+                     // stepGame: the name verify-game.js's termination sim looks for.
+                     // Without it the sim was SILENTLY SKIPPED (a WARN). (2026-09-24)
+                     stepGame: stepPhysics };
 }
 
 /* ======================= DOM / RENDER / INPUT (browser) =================== */
