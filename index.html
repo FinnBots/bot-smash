@@ -533,7 +533,7 @@ canvas{ touch-action:none; }
 <script>
 "use strict";
 /* ==========================================================================
-   BOT SMASH — FinnBots (Atari Breakout, faithful).  ENGINE (Free gameplay).
+   BOT SMASH — FinnBots (the 1976 brick-and-paddle original, faithful).  ENGINE (Free gameplay).
    The pure engine below is UNCHANGED from the live Free build — physics and
    the HEADLESS export are byte-preserved so approved gameplay and the
    winnability sims still hold. The only additions are the engine-contract
@@ -559,7 +559,7 @@ const CFG = {
 const VIEW = { w:480, h:320 };
 
 /* ---- WALL: rows are data. Tint band + points per row, top -> bottom. ------ */
-/* Arcade Breakout (Atari, 1976): 8 rows of 14 bricks, two rows per colour band,
+/* The brick-and-paddle original (1976): 8 rows of 14 bricks, two rows per colour band,
    worth 7 / 5 / 3 / 1 points from the top down. FinnBots tints, arcade numbers. */
 const WALL = {
   cols:14, rows:8, padX:8, padTop:30, gap:2, brickH:12,
@@ -590,7 +590,7 @@ const DIFFICULTY = {
   ballR:7,                     // bead carries Bot 106 art — sized to read
   baseSpeed:190,               // px/s at wave 1
   waveMult:1.16,               // per-wave speed growth — UNBOUNDED (the ceiling)
-  // arcade Breakout speeds the ball up on the 4th and 12th hit of a turn, and again
+  // the brick-and-paddle original speeds the ball up on the 4th and 12th hit of a turn, and again
   // on first contact with the orange and the red rows.
   hitBumpAt:[4,12], hitBump:1.06,
   bandBump:1.06,               // first contact with the orange (row 2/3) and red (row 0/1) bands
