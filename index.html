@@ -1146,7 +1146,7 @@ if(!HEADLESS){
     }
 
     // ---- score memo (SMSH — no seed, no move-log, no replay; records NOT verified) ----
-    function buildScoreMemo(res){ return MEMO_TAG+'|score|sig='+String(entrySig).slice(0,32)+'|waves='+res.waves+'|score='+res.score+'|time='+res.timeMs; }
+    function buildScoreMemo(res){ return MEMO_TAG+'|score|sig='+String(entrySig).slice(0,32)+'|waves='+res.waves+'|score='+res.score+'|time='+Math.round(res.timeMs); }
 
     // ---- flow glue (Bot Smash: single-run action game) ---------------------
     function relabelStart(){
