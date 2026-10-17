@@ -281,7 +281,7 @@ canvas{ touch-action:none; }
    turned that off for a pointer that IS a cursor, so a laptop kept thumb-sized
    keys it never needed. Measured at 1440x900 across the served roster: ten
    games carry a control block over 90px tall — RIVETBOT 152, BOTMAN/BURROBOT/
-   Mrs Bot 142, BotFord/DRUM PUSH/HOP 106 136 — and every one of those canvases
+   Mrs Bot 142, BotFord/DRUM PUSH/HOPBOT 136 — and every one of those canvases
    is HEIGHT-BOUND, so each pixel of pad comes straight out of the play area.
    The pad stays (people do click it), it just stops being a thumb rest.
    Measured gain: +4.6% to +8.5% canvas height on eight games, and because the
@@ -533,7 +533,7 @@ canvas{ touch-action:none; }
       '.fb-seed-btn:focus-visible{outline:2px solid #3a6ff7;outline-offset:2px}' +
       '.fb-seed .s{display:none}' +
       /* The game's own NAME outranks this chip. At 375px the long label pushed
-       * "WING 106" out of the topbar and left the title rendering as "W..",
+       * "WINGBOT" out of the topbar and left the title rendering as "W..",
        * so below 560px the chip drops the date and uses its short label. A
        * badge that costs a game its title is not worth the information. */
       '@media (max-width:560px){.fb-seed{font-size:10px;padding:3px 3px 3px 7px;gap:4px}' +
@@ -575,7 +575,7 @@ canvas{ touch-action:none; }
      2. CABINET — the canvas reads as an arcade screen: bezel, amber rim light, glow.
      3. THEME  — dark-mode parity with the hub (games.finnstergram.com adapts, the
                  games did not, so hub -> game was a light/dark slap in the face).
-   v2: the PIXEL bot mark (16x16 monitor head, magenta smile — the face of Bots #106/#20)
+   v3: the PIXEL bot mark is Bot 2969, the main character (full colour, 16x16, outlined)
    shared with finnstergram.com and the hub, and a NIGHT-MODE SWITCH in the topbar.
    Section 4 below is written ONCE; apply-brand.js emits it twice — for "the device is
    dark and the player has not chosen light", and for "the switch says dark" — scoping
@@ -869,7 +869,7 @@ body:not(.mode-paid) .app .facts{ display:block !important; }
   color:inherit; opacity:.6; margin:0 0 2px; text-align:center; }
 .fb-outro-win .fb-outro-kicker{ color:var(--amber,#f2a03d); opacity:1; }
 
-/* ---- 3. the hero. Founder, 2026-09-25: "the hero needs to be Bot 106" ---
+/* ---- 3. the hero — Bot 2969, the project's main character (Founder, 2026-10-17) ---
    He is the one who just played the run, so he is the one on the ending
    screen: lit and lifted on a clear, dimmed and tilted on a loss. */
 .fb-outro-hero{ display:block; margin:6px auto 8px; width:76px; height:76px;
@@ -1020,7 +1020,7 @@ body:not(.mode-paid) .app .facts{ display:block !important; }
 <body>
   <div class="wrap">
     <header class="topbar">
-      <!--fb:pill--><a class="fb-mark" href="https://games.finnstergram.com" aria-label="FinnBots — more games"><svg class="fb-bot" viewBox="0 0 16 16" shape-rendering="crispEdges" aria-hidden="true" focusable="false"><path fill="currentColor" d="M7 1h2v2H7zM2 3h12v1H2zM1 4h14v9H1zM2 13h12v1H2zM0 7h1v3H0zM15 7h1v3h-1z"/><path fill="var(--fb-amber)" d="M7 0h2v1H7z"/><path fill="var(--fb-screen)" d="M2 5h12v7H2z"/><path fill="var(--fb-face,#ff4fd8)" d="M4 6h2v1H4zM3 7h1v2H3zM6 7h1v2H6zM10 6h2v1h-2zM9 7h1v2H9zM12 7h1v2h-1zM4 10h1v1H4zM11 10h1v1h-1zM5 11h6v1H5z"/></svg><span class="fb-word">FINN<i>BOTS</i></span></a><button class="fb-theme" type="button" role="switch" aria-checked="false" aria-label="Night mode"><span class="fbt-track" aria-hidden="true"><span class="fbt-thumb"><svg class="fbt-sun" viewBox="0 0 7 7" shape-rendering="crispEdges"><path fill="#e8891c" d="M2 2h3v3H2zM3 0h1v1H3zM3 6h1v1H3zM0 3h1v1H0zM6 3h1v1H6zM1 1h1v1H1zM5 1h1v1H5zM1 5h1v1H1zM5 5h1v1H5z"/></svg><svg class="fbt-moon" viewBox="0 0 7 7" shape-rendering="crispEdges"><path fill="#3d3f9e" d="M2 0h3v1H2zM1 1h2v1H1zM0 2h2v3H0zM1 5h2v1H1zM2 6h3v1H2zM4 5h2v1H4z"/></svg></span></span></button><!--/fb-->
+      <!--fb:pill--><a class="fb-mark" href="https://games.finnstergram.com" aria-label="FinnBots — more games"><svg class="fb-bot" viewBox="0 0 16 16" shape-rendering="crispEdges" aria-hidden="true" focusable="false"><path fill="#2a2350" d="M2 2h12v1H2zM1 3h1v1H1zM14 3h1v1H14zM0 4h1v1H0zM15 4h1v1H15zM0 5h1v1H0zM15 5h1v1H15zM0 6h1v1H0zM15 6h1v1H15zM0 7h1v1H0zM15 7h1v1H15zM0 8h1v1H0zM15 8h1v1H15zM0 9h1v1H0zM15 9h1v1H15zM0 10h1v1H0zM15 10h1v1H15zM0 11h1v1H0zM15 11h1v1H15zM0 12h1v1H0zM15 12h1v1H15zM1 13h1v1H1zM14 13h1v1H14zM2 14h12v1H2z"/><path fill="#ff8fc8" d="M3 0h2v1H3zM11 0h2v1H11zM3 1h2v1H3zM11 1h2v1H11z"/><path fill="#8fd3f5" d="M2 3h12v1H2zM1 4h14v1H1zM1 5h14v1H1zM1 6h14v1H1zM1 7h14v1H1zM1 8h14v1H1zM1 9h14v1H1zM1 10h14v1H1zM1 11h14v1H1zM1 12h14v1H1zM2 13h12v1H2z"/><path fill="#5aa9d6" d="M1 4h3v1H1zM1 5h3v1H1zM1 6h3v1H1zM1 7h3v1H1zM1 8h3v1H1zM1 9h3v1H1zM1 10h3v1H1zM1 11h3v1H1zM1 12h3v1H1z"/><path fill="#fff" d="M3 5h4v1H3zM9 5h4v1H9zM3 6h4v1H3zM9 6h4v1H9zM3 7h4v1H3zM9 7h4v1H9z"/><path fill="#2a2350" d="M4 5h1v1H4zM11 5h1v1H11zM4 6h2v1H4zM10 6h2v1H10z"/><path fill="#fff" d="M4 10h8v1H4zM4 11h8v1H4z"/><path fill="#2a2350" d="M6 10h1v1H6zM8 10h1v1H8zM10 10h1v1H10zM6 11h1v1H6zM8 11h1v1H8zM10 11h1v1H10z"/></svg><span class="fb-word">FINN<i>BOTS</i></span></a><button class="fb-theme" type="button" role="switch" aria-checked="false" aria-label="Night mode"><span class="fbt-track" aria-hidden="true"><span class="fbt-thumb"><svg class="fbt-sun" viewBox="0 0 7 7" shape-rendering="crispEdges"><path fill="#e8891c" d="M2 2h3v3H2zM3 0h1v1H3zM3 6h1v1H3zM0 3h1v1H0zM6 3h1v1H6zM1 1h1v1H1zM5 1h1v1H5zM1 5h1v1H1zM5 5h1v1H5z"/></svg><svg class="fbt-moon" viewBox="0 0 7 7" shape-rendering="crispEdges"><path fill="#3d3f9e" d="M2 0h3v1H2zM1 1h2v1H1zM0 2h2v3H0zM1 5h2v1H1zM2 6h3v1H2zM4 5h2v1H4z"/></svg></span></span></button><!--/fb-->
       <h1 class="title">BOT SMASH</h1>
       <button class="iconbtn" id="infoBtn" aria-label="How to play">ⓘ</button>
     </header>
@@ -1047,7 +1047,7 @@ body:not(.mode-paid) .app .facts{ display:block !important; }
     </div>
 
     <main class="surface">
-      <canvas id="game" width="480" height="320" aria-label="Bot Smash play area. Drag left and right to move the paddle and bounce Bot 106 into the wall."></canvas>
+      <canvas id="game" width="480" height="320" aria-label="Bot Smash play area. Drag left and right to move the paddle and bounce Bot 2969 into the wall."></canvas>
     </main>
 
     <div class="hud" aria-live="polite">
@@ -1072,7 +1072,7 @@ body:not(.mode-paid) .app .facts{ display:block !important; }
       <h2 id="rulesTitle">HOW TO PLAY</h2>
       <ul class="rules">
         <li><b>Drag</b> left/right (or use ← →) to slide the paddle.</li>
-        <li>Bot 106 serves himself as the bead. Break the wall — arcade values: <b>7 / 5 / 3 / 1</b> points from the top band down.</li>
+        <li>Bot 2969 serves himself as the bead. Break the wall — arcade values: <b>7 / 5 / 3 / 1</b> points from the top band down.</li>
         <li>Clear the whole wall and a <b>faster wall</b> returns. That's your next wave.</li>
         <li>Miss the bead and you lose one of <b>3 lives</b>.</li>
         <li>The bead speeds up on the <b>4th and 12th</b> hit of a turn and again on first contact with the orange and red bands. Break through to the <b>top wall and your paddle halves</b>. It speeds up every wave too — see how many you clear.</li>
@@ -1128,9 +1128,9 @@ body:not(.mode-paid) .app .facts{ display:block !important; }
 const CFG = {
   name:'Bot Smash', memoNS:'SMSH', chassis:'sink-leaderboard',
   subdomain:'smash.finnstergram.com', port:9010,
-  hero:106,
+  hero:2969,
   // sprite base is the one field to fill from a live game (grep ARWEAVE_BASE):
-  spriteBase:'https://arweave.net/_cPSCheRvzVBlZK7QwM-3nXtteMdBbUn-zJhbGRlMmo',   // -> `${spriteBase}/106.png`
+  spriteBase:'https://arweave.net/_cPSCheRvzVBlZK7QwM-3nXtteMdBbUn-zJhbGRlMmo',   // -> `${spriteBase}/2969.png`
   accent:'#f2a03d',
   // money model (recorded for the Paid pass; UNUSED in this Free engine):
   entryOIL:25, scorePost:1,
@@ -1168,7 +1168,7 @@ const DIFFICULTY = {
   lives:3,
   paddleW:64, paddleH:10, paddleY:300,
   paddleMaxSpeed:520,          // px/s — FINITE. This is half of the ceiling.
-  ballR:7,                     // bead carries Bot 106 art — sized to read
+  ballR:7,                     // bead carries Bot 2969 art — sized to read
   baseSpeed:190,               // px/s at wave 1
   waveMult:1.16,               // per-wave speed growth — UNBOUNDED (the ceiling)
   // the brick-and-paddle original speeds the ball up on the 4th and 12th hit of a turn, and again
@@ -1399,7 +1399,7 @@ if(!HEADLESS){
   ctx.imageSmoothingEnabled=false;
   const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // hero sprite: real Bot 106 with numbered-swatch fallback (FDL rule)
+  // hero sprite: real Bot 2969 with numbered-swatch fallback (FDL rule)
   const hero=new Image(); let heroOK=false;
   hero.crossOrigin='anonymous';
   hero.onload=()=>{heroOK=true;};
@@ -1499,20 +1499,20 @@ if(!HEADLESS){
       ctx.strokeStyle='rgba(0,0,0,.18)'; ctx.lineWidth=1; ctx.strokeRect(k.x+.5,k.y+.5,k.w-1,k.h-1);
     }
 
-    // paddle — clean FDL bar (Bot 106 rides the bead, not the paddle)
+    // paddle — clean FDL bar (Bot 2969 rides the bead, not the paddle)
     const px=s.paddleX, py=DIFFICULTY.paddleY, pw=s.paddleW, ph=DIFFICULTY.paddleH;
     ctx.fillStyle=getComputedStyle(document.documentElement).getPropertyValue('--plum')||'#5f4c57';
     ctx.fillRect(px,py,pw,ph);
     ctx.fillStyle='#3a6ff7'; ctx.fillRect(px,py,pw,2);
 
-    // bead = Bot 106 as a ROUND token (like Bot Pong); round amber fallback
+    // bead = Bot 2969 as a ROUND token (like Bot Pong); round amber fallback
     const R=DIFFICULTY.ballR, cx=s.ball.x, cy=s.ball.y;
     ctx.save();
     ctx.beginPath(); ctx.arc(cx,cy,R,0,Math.PI*2); ctx.closePath();
     if(heroOK){
       ctx.fillStyle='#2a2230'; ctx.fill();      // backing so PNG corners never show board
       ctx.clip();
-      const d=R*2+4;                             // slight overscan so 106's face fills the disc
+      const d=R*2+4;                             // slight overscan so 2969's face fills the disc
       ctx.drawImage(hero, cx-d/2, cy-d/2, d, d);
     }else{
       ctx.fillStyle=CFG.accent; ctx.fill();      // round amber bead
@@ -2312,13 +2312,13 @@ if(!HEADLESS){
     place();
 
     var hero = q('.fb-outro-hero');
-    /* The hero is the real Bot 106 PNG every game already ships (Founder,
-       2026-09-25). Shown only once the browser confirms it decoded, so a game
-       without the asset simply has no hero rather than a broken image. */
+    /* The hero is the real Bot 2969 PNG every game ships (Founder, 2026-10-17: the
+       project's main character). Shown only once the browser confirms it decoded, so a
+       game without the asset simply has no hero rather than a broken image. */
     try{
       hero.addEventListener('load', function(){ hero.hidden = false; });
       hero.addEventListener('error', function(){ hero.hidden = true; });
-      hero.src = 'assets/hero/bot-106.png';
+      hero.src = 'assets/hero/bot-2969.png';
     }catch(e){}
 
     /* ---- the count-up ---------------------------------------------------- */
@@ -2438,8 +2438,8 @@ if(!HEADLESS){
       if(box.parentNode === card) document.body.classList.add('fb-outro-on');
       box.classList.remove('fb-outro-win','fb-outro-end');
       box.classList.add(win ? 'fb-outro-win' : 'fb-outro-end');
-      q('.fb-outro-kicker').textContent = win ? 'Shift complete · Bot 106 made it out'
-                                              : 'Shift ended · Bot 106 powers down';
+      q('.fb-outro-kicker').textContent = win ? 'Shift complete · Bot 2969 made it out'
+                                              : 'Shift ended · Bot 2969 powers down';
       var rows = harvest(), ul = q('.fb-outro-tally');
       ul.innerHTML = '';
       for(var i=0;i<rows.length;i++){
